@@ -12,6 +12,37 @@ export default function RootLayout() {
         }}
       
       />
+      <Stack.Screen
+        name="my_loans"
+        options={{
+          title: "",
+          headerStyle: {
+            backgroundColor: "#1F1F1F",
+          },
+          headerTintColor: "#EAEAEA",
+        }}
+      />
+      <Stack.Screen
+        name="issued_loans"
+        options={{
+          title: "",
+          headerStyle: {
+            backgroundColor: "#1F1F1F",
+          },
+          headerTintColor: "#EAEAEA",
+        }}
+      />
+      <Stack.Screen
+        name="friends"
+        options={{
+          title: "",
+          headerStyle: {
+            backgroundColor: "#1F1F1F",
+          },
+          headerTintColor: "#EAEAEA",
+        }}
+      
+      />
     </Stack>
   );
 }

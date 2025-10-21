@@ -9,6 +9,7 @@ export default function RootLayout() {
         options={{
           headerShown: false,
           title: "Index",
+          tabBarStyle: { display: "none" },
         }}
       />
       

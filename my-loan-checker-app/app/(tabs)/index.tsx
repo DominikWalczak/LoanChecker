@@ -1,21 +1,25 @@
 import { Text, View, StyleSheet, Pressable} from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
 
 export default function Index() {
   const router = useRouter();
   function handleChangeWindow(windowName: string){
-    router.replace(windowName);
+    router.push(windowName);
   }
 
   return (
-    <View style={styles.main}>
-      <Text style={styles.text}>LoanChecker</Text>
-      <View style={styles.pressView}>
-        <Pressable style={styles.press} onPress={() => handleChangeWindow("/my_loans")}><Text style={styles.text2}>My Loans</Text></Pressable>
-        <Pressable style={styles.press} onPress={() => handleChangeWindow("/issued_loans")}><Text style={styles.text2}>Issued loans</Text></Pressable>
-        <Pressable style={styles.press} onPress={() => handleChangeWindow("/friends")}><Text style={styles.text2}>Friends</Text></Pressable>
+    <>
+      <StatusBar style="light" backgroundColor="#701515ff" /> 
+      <View style={styles.main}>
+        <Text style={styles.text}>LoanChecker</Text>
+        <View style={styles.pressView}>
+          <Pressable style={styles.press} onPress={() => handleChangeWindow("/my_loans")}><Text style={styles.text2}>My Loans</Text></Pressable>
+          <Pressable style={styles.press} onPress={() => handleChangeWindow("/issued_loans")}><Text style={styles.text2}>Issued loans</Text></Pressable>
+          <Pressable style={styles.press} onPress={() => handleChangeWindow("/friends")}><Text style={styles.text2}>Friends</Text></Pressable>
+        </View>
       </View>
-    </View>
+    </>
   );
 }
 const styles = StyleSheet.create({
