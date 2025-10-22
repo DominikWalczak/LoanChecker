@@ -3,7 +3,11 @@ import {View, Text, Pressable, StyleSheet} from "react-native";
 export default function Friends(){
     return(
         <View style={styles.main}>
-
+          <View style={styles.pressView}>
+            <Pressable style={styles.press}><Text style={styles.text2}>Pending</Text></Pressable>
+            <Text style={styles.press}></Text> 
+            {/* wczytywanie flatlisty oraz dodanie searchu */}
+          </View>
         </View>
 
     )
@@ -15,6 +19,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   pressView:{
+    marginTop: 20,
     alignItems: "center",
     rowGap: 20,
   },
@@ -37,5 +42,10 @@ const styles = StyleSheet.create({
     width: "80%",
     alignItems: "center",
     borderRadius: 10,
+    shadowColor: '#2A2A2A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65, 
+    elevation: 6,
   },
 });

@@ -1,16 +1,14 @@
 import { Text, View, StyleSheet, Pressable} from "react-native";
-import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
 
 export default function Index() {
   const router = useRouter();
-  function handleChangeWindow(windowName: string){
+  function handleChangeWindow(windowName: "/my_loans" | "/issued_loans" | "/friends"){
     router.push(windowName);
   }
 
   return (
     <>
-      <StatusBar style="light" backgroundColor="#701515ff" /> 
       <View style={styles.main}>
         <Text style={styles.text}>LoanChecker</Text>
         <View style={styles.pressView}>
@@ -39,7 +37,14 @@ const styles = StyleSheet.create({
     padding: 10,
     width: "50%",
     borderBottomRightRadius: 20,
+    borderTopRightRadius: 20,
     marginBottom: 30,
+    shadowColor: '#2A2A2A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65, 
+    elevation: 6,
+
   },
   text2: {
     fontSize: 26, 
@@ -51,5 +56,10 @@ const styles = StyleSheet.create({
     width: "80%",
     alignItems: "center",
     borderRadius: 10,
+    shadowColor: '#2A2A2A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65, 
+    elevation: 6,
   },
 });

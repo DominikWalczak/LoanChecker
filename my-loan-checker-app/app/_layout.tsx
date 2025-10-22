@@ -15,7 +15,7 @@ export default function RootLayout() {
       <Stack.Screen
         name="my_loans"
         options={{
-          title: "",
+          title: "My Loans",
           headerStyle: {
             backgroundColor: "#1F1F1F",
           },
@@ -25,7 +25,7 @@ export default function RootLayout() {
       <Stack.Screen
         name="issued_loans"
         options={{
-          title: "",
+          title: "Issued Loans",
           headerStyle: {
             backgroundColor: "#1F1F1F",
           },
@@ -35,7 +35,7 @@ export default function RootLayout() {
       <Stack.Screen
         name="friends"
         options={{
-          title: "",
+          title: "Friends",
           headerStyle: {
             backgroundColor: "#1F1F1F",
           },
