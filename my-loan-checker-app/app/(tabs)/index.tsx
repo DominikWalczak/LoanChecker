@@ -1,5 +1,6 @@
 import { Text, View, StyleSheet, Pressable} from "react-native";
 import { useRouter } from "expo-router";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Index() {
   const router = useRouter();
@@ -7,6 +8,23 @@ export default function Index() {
     router.push(windowName);
   }
 
+  async function dbFetch() {
+    try{
+      const response = await fetch("");
+      console.log("Status odpowiedzi:", response.status);
+      if(!response.ok) return "Db-error";
+      const json = await response.json();
+      console.log("Odpowiedź z backendu:", json);
+      return json;
+    }catch(error){
+      console.log(error);
+    }
+  }
+  const {data, isError, isLoading, refetch} = useQuery({
+    queryKey: ["users"],
+    queryFn: () => dbFetch(),
+    enabled: true,
+  });
   return (
     <>
       <View style={styles.main}>
@@ -15,6 +33,7 @@ export default function Index() {
           <Pressable style={styles.press} onPress={() => handleChangeWindow("/my_loans")}><Text style={styles.text2}>My Loans</Text></Pressable>
           <Pressable style={styles.press} onPress={() => handleChangeWindow("/issued_loans")}><Text style={styles.text2}>Issued loans</Text></Pressable>
           <Pressable style={styles.press} onPress={() => handleChangeWindow("/friends")}><Text style={styles.text2}>Friends</Text></Pressable>
+          <Text style={styles.text2}>{JSON.stringify(data)}</Text>
         </View>
       </View>
     </>
