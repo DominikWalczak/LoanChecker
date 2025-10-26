@@ -1,6 +1,6 @@
-import { Text, View, StyleSheet, Pressable} from "react-native";
-import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "expo-router";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function Index() {
   const router = useRouter();
@@ -10,7 +10,7 @@ export default function Index() {
 
   async function dbFetch() {
     try{
-      const response = await fetch("");
+      const response = await fetch(IP);
       console.log("Status odpowiedzi:", response.status);
       if(!response.ok) return "Db-error";
       const json = await response.json();
