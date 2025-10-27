@@ -1,0 +1,1 @@
+konieczne dodanie walidacji czy dane są oraz czy pesel, email jest poprawny oraz ilość znaków // register.tsx

@@ -43,6 +43,28 @@ export default function RootLayout() {
         }}
       
       />
+      <Stack.Screen
+        name="login"
+        options={{
+          title: "Login",
+          headerStyle: {
+            backgroundColor: "#1F1F1F",
+          },
+          headerTintColor: "#EAEAEA",
+        }}
+      
+      />
+      <Stack.Screen
+        name="register"
+        options={{
+          title: "Register",
+          headerStyle: {
+            backgroundColor: "#1F1F1F",
+          },
+          headerTintColor: "#EAEAEA",
+        }}
+      
+      />
     </Stack>
   );
 }

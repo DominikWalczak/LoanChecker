@@ -10,7 +10,7 @@ export default function Index() {
 
   async function dbFetch() {
     try{
-      const response = await fetch(IP);
+      const response = await fetch("");
       console.log("Status odpowiedzi:", response.status);
       if(!response.ok) return "Db-error";
       const json = await response.json();
