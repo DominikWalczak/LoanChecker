@@ -1,15 +1,20 @@
+import { useMutation } from '@tanstack/react-query';
 import { useRouter } from "expo-router";
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { z } from 'zod';
+import env from '../src/env';
 
-type RegistrationData = {
-    email: string;
-    password: string;
-    name: string;
-    vorname: string;
-    pesel: string;
+const registrationSchema = z.object({
+    email: z.string().email("Written data must be an email").min(5, "Email must be longer than this"),
+    password: z.string().min(8, "Password must be at least 8 characters long"),
+    name: z.string().min(1, "Name cannot be empty"),
+    vorname: z.string().min(1, "Vorname cannot be empty"),
+    pesel: z.string().min(11, "PESEL must have 11 digits").max(11, "PESEL must have 11 digits"),
+});
 
-}
+type RegistrationData = z.infer<typeof registrationSchema>;
+
 export default function Register(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -19,37 +24,59 @@ export default function Register(){
     const router = useRouter();
 
     async function registerUser(data: RegistrationData) {
+        let errorMessages;
         try {
-            console.log(2);
-            const response = await fetch('/users', {
+            const dataValidation = registrationSchema.safeParse(data);
+            if (!dataValidation.success){
+                errorMessages = Object.values(dataValidation.error.flatten().fieldErrors)
+                    .map(errors => errors.join('; '))
+                    .join('\n');
+                throw new Error(errorMessages);
+            }
+            const response = await fetch(`${env.IP}/users`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data),
             });
-            console.log(3);
 
             const result = await response.json();
             console.log('Server response:', result);
-            console.log(4);
-            router.replace("/login"); // konieczne dodanie walidacji czy dane są oraz czy pesel, email jest poprawny oraz ilość znaków
+
         } catch (error) {
-            console.log(5);
-            console.error('Error sending data:', error);
+            console.log('Error sending data:', error);
+            return {number: 1,  error: errorMessages };
         }
     }
 
+    const registrateMutation = useMutation({
+        mutationFn: registerUser,
+        onSuccess: (data) => {
+            if (data?.error){
+                throw new Error(data?.error)
+            }
+
+            router.replace("/login");
+        },
+        onError: (error) => {
+            alert(`Registration failed: ${error}`)
+        },
+    });
+
     async function handleSubmit() {
-        console.log(1);
-        const userData: RegistrationData = {
-            email,
-            password,
-            name,
-            vorname,
-            pesel,
-        };
-        await registerUser(userData);
+        try {
+            const userData: RegistrationData = {
+                email,
+                password,
+                name,
+                vorname,
+                pesel,
+            };
+            registrateMutation.mutate(userData);
+        } catch (error) {
+            console.log(`handleSubmit Error: ${error}`);
+        }
 
     };
 
@@ -62,6 +89,8 @@ export default function Register(){
                     style={styles.text}
                     value={email}
                     onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
                 />
                 <TextInput 
                     placeholder="Password"

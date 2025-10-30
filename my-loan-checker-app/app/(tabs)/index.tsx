@@ -1,21 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import env from '../../src/env';
 
 export default function Index() {
   const router = useRouter();
   function handleChangeWindow(windowName: "/my_loans" | "/issued_loans" | "/friends"){
     router.push(windowName);
   }
-
   async function dbFetch() {
     try{
-      const response = await fetch("");
+      const response = await fetch(env.IP);
       console.log("Status odpowiedzi:", response.status);
-      if(!response.ok) return "Db-error";
+      if(!response.ok) return [];
       const json = await response.json();
       console.log("Odpowiedź z backendu:", json);
-      return json;
+      return json || [];
     }catch(error){
       console.log(error);
     }

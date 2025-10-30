@@ -1,31 +1,70 @@
+import { useMutation } from '@tanstack/react-query';
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { z } from 'zod';
+import env from '../src/env';
 
-type log = {
-    email: string;
-    password: string;
-}
+const LoginSchema = z.object({
+  email: z.string().email({ message: "Provided email is wrong" }),
+  password: z.string().min(1, { message: "Password is required" })
+});
+
+type LoginData = z.infer<typeof LoginSchema>;
+
 export default function Login(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
-    
-    async function loginUser(data: log) {
+
+    async function loginUser(data: LoginData) {
+        console.log(data);
         try {
-            console.log(data);
+            const response = await fetch(`${env.IP}/users/${encodeURIComponent(data.email)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                return response.json().catch(() => ({}));
+            }
+
+            const json = await response.json();
+            console.log('Server response:', json);
+
+            return json;
         } catch (error) {
             console.error('Error sending data:', error);
+            throw error;
         }
     }
-    async function Log() {
-        const loginData: log = {
-            email,
-            password,
-        }
 
-        await loginUser(loginData);
-    }
+    const loginMutation = useMutation({
+        mutationFn: loginUser,
+        onSuccess: (data) => {
+            console.log(data);
+            if(data.message){
+                throw Error(data.message);
+            }
+        },
+        onError: (error) => {
+            alert(`Login failed: ${error}`);
+        },
+    });
+
+    const handleLogin = () => {
+        try {
+            const dataToValidate = { email, password };
+            
+            const validatedData = LoginSchema.parse(dataToValidate);
+
+            loginMutation.mutate(validatedData);
+
+        } catch (error) {
+            console.log(`handleLogin Error: ${error}`);
+        }
+    };
     return(
         <View style={styles.main}>
             <View style={styles.pressView}>
@@ -35,6 +74,8 @@ export default function Login(){
                     style={styles.text}
                     value={email}
                     onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
                 />
                 <TextInput 
                     placeholder="Password"
@@ -46,7 +87,7 @@ export default function Login(){
                 />
             </View>
             <View style={styles.pressView}>
-                <Pressable style={styles.press} onPress={() => console.log(2)}><Text style={styles.text2}>Log in</Text></Pressable>
+                <Pressable style={styles.press} onPress={handleLogin}><Text style={styles.text2}>Log in</Text></Pressable>
             </View>
             <View style={styles.pressView}>
                 <Pressable style={styles.press} onPress={() => router.push("/register")}><Text style={styles.text2}>Got no account yet?</Text></Pressable>
