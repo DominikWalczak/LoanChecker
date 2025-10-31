@@ -6,8 +6,8 @@ import { z } from 'zod';
 import env from '../src/env';
 
 const LoginSchema = z.object({
-  email: z.string().email({ message: "Provided email is wrong" }),
-  password: z.string().min(1, { message: "Password is required" })
+  email: z.string().email("Written data must be an email, example: x@x.x" ),
+  password: z.string().min(1, "Password is required")
 });
 
 type LoginData = z.infer<typeof LoginSchema>;
@@ -18,8 +18,15 @@ export default function Login(){
     const router = useRouter();
 
     async function loginUser(data: LoginData) {
-        console.log(data);
+        let errorMessages;
         try {
+            const validateData = LoginSchema.safeParse(data);
+            if (!validateData.success){
+                errorMessages = Object.values(validateData.error.flatten().fieldErrors)
+                    .map(errors => errors.join('; '))
+                    .join('\n');
+                throw errorMessages;
+            }
             const response = await fetch(`${env.IP}/users/${encodeURIComponent(data.email)}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -29,13 +36,11 @@ export default function Login(){
             if (!response.ok) {
                 return response.json().catch(() => ({}));
             }
+            const result = await response.json();
+            console.log('Server response:', result);
 
-            const json = await response.json();
-            console.log('Server response:', json);
-
-            return json;
         } catch (error) {
-            console.error('Error sending data:', error);
+            console.log('Error sending data:', error);
             throw error;
         }
     }
@@ -43,12 +48,13 @@ export default function Login(){
     const loginMutation = useMutation({
         mutationFn: loginUser,
         onSuccess: (data) => {
-            console.log(data);
-            if(data.message){
-                throw Error(data.message);
+            if(data?.message){
+                throw data.message;
             }
+            console.log(13123);
         },
         onError: (error) => {
+            
             alert(`Login failed: ${error}`);
         },
     });
@@ -56,10 +62,8 @@ export default function Login(){
     const handleLogin = () => {
         try {
             const dataToValidate = { email, password };
-            
-            const validatedData = LoginSchema.parse(dataToValidate);
 
-            loginMutation.mutate(validatedData);
+            loginMutation.mutate(dataToValidate);
 
         } catch (error) {
             console.log(`handleLogin Error: ${error}`);

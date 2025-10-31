@@ -6,7 +6,7 @@ import { z } from 'zod';
 import env from '../src/env';
 
 const registrationSchema = z.object({
-    email: z.string().email("Written data must be an email").min(5, "Email must be longer than this"),
+    email: z.string().email("Written data must be an email, example: x@x.x").min(5, "Email must be longer than 5 characters"),
     password: z.string().min(8, "Password must be at least 8 characters long"),
     name: z.string().min(1, "Name cannot be empty"),
     vorname: z.string().min(1, "Vorname cannot be empty"),
@@ -31,32 +31,32 @@ export default function Register(){
                 errorMessages = Object.values(dataValidation.error.flatten().fieldErrors)
                     .map(errors => errors.join('; '))
                     .join('\n');
-                throw new Error(errorMessages);
+                throw errorMessages;
             }
             const response = await fetch(`${env.IP}/users`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify(dataValidation.data),
             });
+
+            if (!response.ok) {
+                return response.json().catch(() => ({}));
+            }
 
             const result = await response.json();
             console.log('Server response:', result);
 
         } catch (error) {
             console.log('Error sending data:', error);
-            return {number: 1,  error: errorMessages };
+            throw error;
         }
     }
 
     const registrateMutation = useMutation({
         mutationFn: registerUser,
-        onSuccess: (data) => {
-            if (data?.error){
-                throw new Error(data?.error)
-            }
-
+        onSuccess: () => {
             router.replace("/login");
         },
         onError: (error) => {
