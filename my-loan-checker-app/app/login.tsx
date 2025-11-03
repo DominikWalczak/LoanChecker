@@ -1,9 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from "expo-router";
+import * as SecureStore from 'expo-secure-store';
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { z } from 'zod';
 import env from '../src/env';
+
+async function saveTokens(access: string, refresh: string) {
+  await SecureStore.setItemAsync("accessToken", access);
+  await SecureStore.setItemAsync("refreshToken", refresh);
+}
+
 
 const LoginSchema = z.object({
   email: z.string().email("Written data must be an email, example: x@x.x" ),
@@ -37,6 +44,7 @@ export default function Login(){
                 return response.json().catch(() => ({}));
             }
             const result = await response.json();
+            saveTokens(result.accessToken, result.refreshToken)
             console.log('Server response:', result);
 
         } catch (error) {
