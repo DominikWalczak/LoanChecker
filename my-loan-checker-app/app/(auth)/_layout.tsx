@@ -1,0 +1,27 @@
+import { Stack } from "expo-router";
+
+export default function AuthLayout() {
+  return (
+    <Stack>
+      <Stack.Screen
+        name="login"
+        options=
+        {{ title: "Login", 
+          headerStyle: { backgroundColor: "#1F1F1F", },
+          headerTintColor: "#EAEAEA", 
+          headerBackVisible: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="register"
+        options={{ 
+          title: "Register", 
+          headerStyle: { backgroundColor: "#1F1F1F", }, 
+          headerTintColor: "#EAEAEA", 
+          headerBackVisible: false,
+        }}
+      />
+    </Stack>
+  );
+}

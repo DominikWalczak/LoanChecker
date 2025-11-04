@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import env from '../../src/env';
+import env from '../../../src/env';
 
 export default function Index() {
   const router = useRouter();

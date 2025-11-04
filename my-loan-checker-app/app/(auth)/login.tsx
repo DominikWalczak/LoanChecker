@@ -4,7 +4,7 @@ import * as SecureStore from 'expo-secure-store';
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { z } from 'zod';
-import env from '../src/env';
+import env from '../../src/env';
 
 async function saveTokens(access: string, refresh: string) {
   await SecureStore.setItemAsync("accessToken", access);
@@ -59,7 +59,7 @@ export default function Login(){
             if(data?.message){
                 throw data.message;
             }
-            console.log(13123);
+            router.replace("/(protected)")
         },
         onError: (error) => {
             

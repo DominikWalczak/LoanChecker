@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { z } from 'zod';
-import env from '../src/env';
+import env from '../../src/env';
 
 const registrationSchema = z.object({
     email: z.string().email("Written data must be an email, example: x@x.x").min(5, "Email must be longer than 5 characters"),

@@ -1,11 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Tabs, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import "../globals.css";
+import "../../globals.css";
 
 const queryClient = new QueryClient();
 export default function RootLayout() {
-  const [loggedIn, setLoggedIn] = useState(false);
   const router = useRouter();
   const [x, setX] = useState(0);
   useEffect(() =>{
