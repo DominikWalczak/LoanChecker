@@ -1,10 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useAuth } from "../../../src/context/AuthContext";
 import env from '../../../src/env';
 
 export default function Index() {
   const router = useRouter();
+  const { isLoggedIn, loading, accessToken, logout } = useAuth();
   function handleChangeWindow(windowName: "/my_loans" | "/issued_loans" | "/friends"){
     router.push(windowName);
   }
@@ -14,7 +16,8 @@ export default function Index() {
       console.log("Status odpowiedzi:", response.status);
       if(!response.ok) return [];
       const json = await response.json();
-      console.log("Odpowiedź z backendu:", json);
+      // console.log("Odpowiedź z backendu:", json);
+      console.log(isLoggedIn, loading, accessToken);
       return json || [];
     }catch(error){
       console.log(error);
@@ -33,7 +36,8 @@ export default function Index() {
           <Pressable style={styles.press} onPress={() => handleChangeWindow("/my_loans")}><Text style={styles.text2}>My Loans</Text></Pressable>
           <Pressable style={styles.press} onPress={() => handleChangeWindow("/issued_loans")}><Text style={styles.text2}>Issued loans</Text></Pressable>
           <Pressable style={styles.press} onPress={() => handleChangeWindow("/friends")}><Text style={styles.text2}>Friends</Text></Pressable>
-          <Text style={styles.text2}>{JSON.stringify(data)}</Text>
+          <Pressable style={styles.press} onPress={() => logout()}><Text style={styles.text2}>Logout</Text></Pressable>
+          {/* <Text style={styles.text2}>{JSON.stringify(data)}</Text> */}
         </View>
       </View>
     </>

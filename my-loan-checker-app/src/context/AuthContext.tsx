@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 type AuthContextType = {
   isLoggedIn: boolean;
   accessToken: string | null;
-  login: (token: string) => Promise<void>;
+  login: (access: string, refresh: string) => Promise<void>;
   logout: () => Promise<void>;
   loading: boolean; 
 };
@@ -26,13 +26,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
   }, []);
 
 
-  const login = async (token: string) => {
-    await SecureStore.setItemAsync("accessToken", token);
-    setAccessToken(token);
+  const login = async (access: string, refresh: string) => {
+    await SecureStore.setItemAsync("accessToken", access);
+    await SecureStore.setItemAsync("refreshToken", refresh);
+
+    setAccessToken(access);
   };
 
   const logout = async () => {
     await SecureStore.deleteItemAsync("accessToken");
+    await SecureStore.deleteItemAsync("refreshToken");
     setAccessToken(null);
   };
 
