@@ -1,5 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import env from '../env';
 
 type AuthContextType = {
   isLoggedIn: boolean;
@@ -7,6 +8,7 @@ type AuthContextType = {
   login: (access: string, refresh: string) => Promise<void>;
   logout: () => Promise<void>;
   loading: boolean; 
+  refreshToken: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -26,18 +28,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
   }, []);
 
 
-  const login = async (access: string, refresh: string) => {
+  async function login(access: string, refresh: string){
     await SecureStore.setItemAsync("accessToken", access);
     await SecureStore.setItemAsync("refreshToken", refresh);
-
     setAccessToken(access);
-  };
+  }
 
-  const logout = async () => {
+  async function logout(){
     await SecureStore.deleteItemAsync("accessToken");
     await SecureStore.deleteItemAsync("refreshToken");
     setAccessToken(null);
-  };
+  }
+
+  async function refreshToken() {
+    const refresh = await SecureStore.getItemAsync("refreshToken")
+    if (!refresh) {
+      await logout();
+      return null;
+    }
+
+    try {
+      const response = await fetch(`${env.IP}/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken: refresh }),
+      });
+
+      if (!response.ok) {
+        await logout();
+        return null;
+      }
+
+      const data = await response.json();
+
+      await SecureStore.setItemAsync("accessToken", data.accessToken);
+      setAccessToken(data.accessToken);
+
+      return data.accessToken;
+    } catch (error) {
+      alert(`Error refreshing token: ${error}`);
+      console.log(`Error refreshing token: ${error}`);
+      await logout();
+      return null;
+    }
+  }
 
   if (loading) return null; 
 
@@ -47,11 +81,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
       accessToken,
       login,
       logout,
-      loading
+      loading,
+      refreshToken
     }}>
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
 export const useAuth = () => useContext(AuthContext)!;

@@ -18,7 +18,7 @@ export default function Login(){
     const [password, setPassword] = useState('');
     const router = useRouter();
     const { isLoggedIn, loading, accessToken, login } = useAuth();
-
+    
     console.log(isLoggedIn, loading, accessToken);
     async function loginUser(data: LoginData) {
         let errorMessages;
