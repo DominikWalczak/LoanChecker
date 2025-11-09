@@ -47,6 +47,20 @@ export default function TabsLayout() {
           title: "Friends",
         }}
       />
+
+      <Tabs.Screen
+        name="friends_pending"
+        options={{
+          title: "Pending Requests $pending_amount",
+        }}
+      />
+
+      <Tabs.Screen
+        name="friends_add"
+        options={{
+          title: "Add Friends",
+        }}
+      />
     </Tabs>
   );
 }

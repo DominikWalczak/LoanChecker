@@ -42,24 +42,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
 
   async function refreshToken() {
     const refresh = await SecureStore.getItemAsync("refreshToken")
+    console.log("REFRESH TOKEN:", refresh);
     if (!refresh) {
+      console.log("Brak refresh token — wylogowuję");
       await logout();
       return null;
     }
 
     try {
-      const response = await fetch(`${env.IP}/auth/refresh`, {
+      const response = await fetch(`${env.IP}/auth/refresh`, { // trzeba dorobić to w backendzie
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refreshToken: refresh }),
       });
 
+      console.log("REFRESH RESPONSE STATUS:", response.status);
+
       if (!response.ok) {
+        const errJson = await response.json().catch(() => null);
+        console.log("REFRESH ERROR:", errJson);
         await logout();
         return null;
       }
 
       const data = await response.json();
+      console.log("NEW TOKEN:", data.accessToken);
 
       await SecureStore.setItemAsync("accessToken", data.accessToken);
       setAccessToken(data.accessToken);
