@@ -39,9 +39,8 @@ export default function Login(){
             if (!response.ok) {
                 return response.json().catch(() => ({}));
             }
-            const result = await response.json();
-            await login(result.accessToken, result.refreshToken);
-            console.log(isLoggedIn, loading, accessToken);
+            const result = await response.json()
+            await login(result.accessToken, result.refreshToken, result.id);
             console.log('Server response:', result);
 
         } catch (error) {

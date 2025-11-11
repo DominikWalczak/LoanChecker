@@ -5,7 +5,7 @@ import env from '../env';
 type AuthContextType = {
   isLoggedIn: boolean;
   accessToken: string | null;
-  login: (access: string, refresh: string) => Promise<void>;
+  login: (access: string, refresh: string, id: string) => Promise<void>;
   logout: () => Promise<void>;
   loading: boolean; 
   refreshToken: () => Promise<void>;
@@ -28,15 +28,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
   }, []);
 
 
-  async function login(access: string, refresh: string){
+  async function login(access: string, refresh: string, id: string){
+    console.log(id)
+    console.log(id)
+    console.log(id)
+        console.log(id)
+    console.log(id)
+    console.log(id)
+        console.log(id)
+    console.log(id)
+    console.log(id)
     await SecureStore.setItemAsync("accessToken", access);
     await SecureStore.setItemAsync("refreshToken", refresh);
+    await SecureStore.setItemAsync("ID", id.toString());
     setAccessToken(access);
   }
 
   async function logout(){
     await SecureStore.deleteItemAsync("accessToken");
     await SecureStore.deleteItemAsync("refreshToken");
+    await SecureStore.deleteItemAsync("ID");
     setAccessToken(null);
   }
 
@@ -50,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
     }
 
     try {
-      const response = await fetch(`${env.IP}/auth/refresh`, { // trzeba dorobić to w backendzie
+      const response = await fetch(`${env.IP}/auth/refresh`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refreshToken: refresh }),

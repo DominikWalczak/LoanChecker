@@ -1,31 +1,43 @@
-import {View, Text, Pressable, StyleSheet, FlatList} from "react-native";
+import * as SecureStore from "expo-secure-store";
+import { useEffect, useState } from "react";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { useAuth } from "@/src/context/AuthContext";
+import env from '../src/env';
 
+export default function DataList({data, onAddFriend }: any){ 
+  const [id, setId] = useState<string | null>(null);
 
-export default function DataList({data}: any){ 
-    console.log(1)
-    console.log(1)
-    console.log(1)
-    console.log(1)
-    console.log(1)
-    console.log(data)
-    console.log(1)
-    console.log(1)
-    console.log(data[6].id)
-    console.log(1)
-    console.log(1)
-    console.log(1)
-    return(
-        <FlatList 
-            contentContainerStyle={styles.pressView}
-            data={data}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-                <View style={styles.press}>
-                    <Text style={styles.text2}>{item.name}, {item.vorname}, {item.id}</Text>
-                </View>
-            )}
-        />
-    )
+  const { isLoggedIn, loading, accessToken, logout, refreshToken } = useAuth();
+
+  useEffect(() => {
+    async function loadId() {
+      const storedId = await SecureStore.getItemAsync("ID");
+      console.log("Loaded ID:", storedId);
+      setId(storedId);
+    }
+    loadId();
+  }, []);
+  if(id === null){
+    return;
+  }
+  return(
+      <FlatList 
+          contentContainerStyle={styles.pressView}
+          data={data}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => {
+            if (item.id.toString() === id){
+              return null;
+            }
+            return (              
+              <View style={styles.press}>
+                <Text style={styles.text2}>{item.name}, {item.vorname}, {item.id}</Text>
+                <Pressable onPress={() => onAddFriend({ url: `${env.IP}/friends`, options: { method: "POST", body: JSON.stringify({ id: id, f_id: item.id }), }, refreshToken: refreshToken })}><Text style={styles.text2}>Add Friend</Text></Pressable>
+              </View>)
+
+          }}
+      />
+  )
 }
 
 const styles = StyleSheet.create({
@@ -53,6 +65,7 @@ const styles = StyleSheet.create({
   },
   press: {  
     backgroundColor: "#2A2A2A",
+    flexDirection: "row",
     padding: 10,
     width: "80%",
     alignItems: "center",

@@ -1,14 +1,40 @@
-import {View, Text, Pressable, StyleSheet, FlatList} from "react-native";
+import {View, StyleSheet} from "react-native";
+import DataList from "@/app/DataList";
+import { useAuth } from "../../../src/context/AuthContext";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import env from '../../../src/env';
+import { addFriend, QueryFetch } from "@/src/utils/extractedFunc";
 
 export default function Friends_add(){
-    return(
-        <View style={styles.main}>
-          <View style={styles.pressView}>
-            {/* wczytywanie flatlisty oraz dodanie searchu */}
-          </View>
-        </View>
 
-    )
+  const { isLoggedIn, loading, accessToken, logout, refreshToken } = useAuth();
+
+  const {data, isError, isLoading, refetch} = useQuery({
+    queryKey: ["users"],
+    queryFn: () => QueryFetch(`${env.IP}/users`, { method: "GET" }, refreshToken),
+    enabled: true,
+  });
+
+  const friendAddMutation = useMutation({
+    mutationFn: ({ url, options, refreshToken }: { url: string, options: any, refreshToken: any }) => 
+      addFriend(url, options, refreshToken),
+    onSuccess: () => {
+      alert("Friend request sent");
+    },
+    onError: (error) => {
+      alert(`Failed to send friend request ${error}`);
+    },
+  });
+
+  return(
+      <View style={styles.main}>
+        <View style={styles.pressView}>
+          {/* wczytywanie flatlisty oraz dodanie searchu */}
+        </View>
+        <DataList data={data} onAddFriend={friendAddMutation.mutate}/>
+      </View>
+
+  )
 }
 
 const styles = StyleSheet.create({
