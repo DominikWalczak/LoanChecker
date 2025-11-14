@@ -11,7 +11,7 @@ export default function ProtectedLayout() {
     const interval = setInterval(() => {
       refreshToken();
       console.log(9999);
-    }, 10 * 1000);
+    }, 10 * 1000 * 60);
 
     return () => clearInterval(interval);
   }, [isLoggedIn]);

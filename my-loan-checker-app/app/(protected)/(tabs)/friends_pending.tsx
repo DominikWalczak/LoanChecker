@@ -1,14 +1,76 @@
-import {View, Text, Pressable, StyleSheet, FlatList} from "react-native";
+import DataList from "@/app/DataList";
+import { MutationFetch, QueryFetch } from "@/src/utils/extractedFunc";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import * as SecureStore from "expo-secure-store";
+import { useEffect, useState } from "react";
+import { StyleSheet, View, Text } from "react-native";
+import { useAuth } from "../../../src/context/AuthContext";
+import env from '../../../src/env';
 
-export default function Friends_pending(){
-    return(
-        <View style={styles.main}>
-          <View style={styles.pressView}>
-            {/* wczytywanie flatlisty oraz dodanie searchu */}
-          </View>
+export default function Friends_Pending(){
+  const [id, setId] = useState<string | null>(null);
+  const { isLoggedIn, loading, accessToken, logout, refreshToken } = useAuth();
+
+  const {data, isError, isLoading, refetch} = useQuery({
+    queryKey: ["users"],
+    queryFn: () => QueryFetch(`${env.IP}/friends/pending/request`, { method: "POST", body: JSON.stringify({ id: id }) }, refreshToken),
+    enabled: false,
+  });
+  
+  useEffect(() => {
+    async function loadId() {
+      const storedId = await SecureStore.getItemAsync("ID");
+      console.log("Loaded ID:", storedId);
+      setId(storedId);
+    }
+    loadId();
+  }, []);
+
+  useEffect(() => {
+    console.log(1)
+    refetch();
+  }, [id]);
+
+
+
+  const friendDenyMutation = useMutation({
+    mutationFn: ({ url, options, refreshToken }: { url: string, options: any, refreshToken: any }) => 
+      MutationFetch(url, options, refreshToken),
+    onSuccess: (d) => {
+        if(d?.message){
+            throw d.message;
+        }
+      alert("Friend request denied");
+    },
+    onError: (error) => {
+      alert(`Failed to deny friend request ${error}`);
+    },
+  });
+
+    const friendAcceptMutation = useMutation({
+    mutationFn: ({ url, options, refreshToken }: { url: string, options: any, refreshToken: any }) => 
+      MutationFetch(url, options, refreshToken),
+    onSuccess: (d) => {
+        if(d?.message){
+            throw d.message;
+        }
+      alert("Friend request accepted");
+    },
+    onError: (error) => {
+      alert(`Failed to accept friend request ${error}`);
+    },
+  });
+
+  return(
+      <View style={styles.main}>
+        <View style={styles.pressView}>
+          {/* wczytywanie flatlisty oraz dodanie searchu */}
+          <Text>{data.name}</Text>
         </View>
+        <DataList type={1} data={data} Mutation={friendAcceptMutation.mutate} Mutation2={friendDenyMutation.mutate}/>
+      </View>
 
-    )
+  )
 }
 
 const styles = StyleSheet.create({

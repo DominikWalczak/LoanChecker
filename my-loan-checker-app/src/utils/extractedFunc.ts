@@ -6,14 +6,18 @@ export function handleWindowChange(url: string){
       router.push(url);
 }
 
-export async function addFriend(url: string, options: any = {}, refreshToken: any){
+export async function MutationFetch(url: string, options: any = {}, refreshToken: any){
       try {
             console.log(url);
             console.log(options);
-            const response = await authFetch(url, options, refreshToken);
-            if (!response.ok) return [];
+            const response = await authFetch(url, options, refreshToken); // kod zatrzymuje się tutaj
+            console.log(2);
+            if (!response.ok){
+                  console.log(response)
+                  return [];
+            } 
             const json = await response.json();
-
+            console.log(1);
             console.log("Fetched:", json);
             return json || [];
       } catch (error) {

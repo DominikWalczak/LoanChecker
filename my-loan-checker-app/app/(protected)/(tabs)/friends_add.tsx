@@ -1,9 +1,9 @@
-import {View, StyleSheet} from "react-native";
 import DataList from "@/app/DataList";
+import { MutationFetch, QueryFetch } from "@/src/utils/extractedFunc";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { StyleSheet, View } from "react-native";
 import { useAuth } from "../../../src/context/AuthContext";
-import { useQuery, useMutation } from "@tanstack/react-query";
 import env from '../../../src/env';
-import { addFriend, QueryFetch } from "@/src/utils/extractedFunc";
 
 export default function Friends_add(){
 
@@ -17,7 +17,7 @@ export default function Friends_add(){
 
   const friendAddMutation = useMutation({
     mutationFn: ({ url, options, refreshToken }: { url: string, options: any, refreshToken: any }) => 
-      addFriend(url, options, refreshToken),
+      MutationFetch(url, options, refreshToken),
     onSuccess: () => {
       alert("Friend request sent");
     },
@@ -31,7 +31,7 @@ export default function Friends_add(){
         <View style={styles.pressView}>
           {/* wczytywanie flatlisty oraz dodanie searchu */}
         </View>
-        <DataList data={data} onAddFriend={friendAddMutation.mutate}/>
+        <DataList type={0} data={data} Mutation={friendAddMutation.mutate}/>
       </View>
 
   )

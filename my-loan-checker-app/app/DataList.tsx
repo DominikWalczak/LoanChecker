@@ -1,10 +1,17 @@
+import { useAuth } from "@/src/context/AuthContext";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import { useAuth } from "@/src/context/AuthContext";
 import env from '../src/env';
 
-export default function DataList({data, onAddFriend }: any){ 
+interface DataListProps {
+  type: number;
+  data: any[];
+  Mutation?: (params: { url: string; options: any; refreshToken: any }) => void;
+  Mutation2?: (params: { url: string; options: any; refreshToken: any }) => void;
+}
+
+export default function DataList({ type, data, Mutation, Mutation2 }: DataListProps){ 
   const [id, setId] = useState<string | null>(null);
 
   const { isLoggedIn, loading, accessToken, logout, refreshToken } = useAuth();
@@ -13,6 +20,7 @@ export default function DataList({data, onAddFriend }: any){
     async function loadId() {
       const storedId = await SecureStore.getItemAsync("ID");
       console.log("Loaded ID:", storedId);
+      console.log("Data:", JSON.stringify(data, null, 2));
       setId(storedId);
     }
     loadId();
@@ -20,7 +28,28 @@ export default function DataList({data, onAddFriend }: any){
   if(id === null){
     return;
   }
-  return(
+  if (type === 0 && Mutation){
+    return(
+        <FlatList 
+            contentContainerStyle={styles.pressView}
+            data={data}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => {
+              if (item.id.toString() === id){
+                return null;
+              }
+              return (              
+                <View style={styles.press}>
+                  <Text style={styles.text2}>{item.name}, {item.vorname}, {item.id}</Text>
+                  <Pressable onPress={() => Mutation({ url: `${env.IP}/friends/pending`, options: { method: "POST", body: JSON.stringify({ id: id, f_id: item.id }), }, refreshToken: refreshToken })}><Text style={styles.text2}>Add Friend</Text></Pressable>
+                </View>)
+  
+            }}
+        />
+    )
+  }
+  else if(type === 1 && Mutation && Mutation2){
+    return(
       <FlatList 
           contentContainerStyle={styles.pressView}
           data={data}
@@ -31,13 +60,19 @@ export default function DataList({data, onAddFriend }: any){
             }
             return (              
               <View style={styles.press}>
-                <Text style={styles.text2}>{item.name}, {item.vorname}, {item.id}</Text>
-                <Pressable onPress={() => onAddFriend({ url: `${env.IP}/friends`, options: { method: "POST", body: JSON.stringify({ id: id, f_id: item.id }), }, refreshToken: refreshToken })}><Text style={styles.text2}>Add Friend</Text></Pressable>
+                <Text style={styles.text2}>{item.name}, {item.vorname}, {item.id}, {item.friend_id}</Text>
+                <Pressable onPress={() => 
+                  Mutation({ url: `${env.IP}/friends/pending/accept`, options: { method: "POST", body: JSON.stringify({ id: id, f_id: item.friend_id, request_id: item.id }), }, refreshToken: refreshToken })}>
+                    <Text style={styles.text2}> Accept </Text></Pressable>
+                <Pressable onPress={() => 
+                  Mutation2({ url: `${env.IP}/friends/pending/deny`, options: { method: "POST", body: JSON.stringify({request_id: item.id }), }, refreshToken: refreshToken })}>
+                  <Text style={styles.text2}>Deny</Text></Pressable>
               </View>)
 
           }}
       />
-  )
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -67,7 +102,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#2A2A2A",
     flexDirection: "row",
     padding: 10,
-    width: "80%",
+    width: "60%",
     alignItems: "center",
     borderRadius: 10,
     shadowColor: '#2A2A2A',
