@@ -10,10 +10,14 @@ export async function MutationFetch(url: string, options: any = {}, refreshToken
       try {
             console.log(url);
             console.log(options);
-            const response = await authFetch(url, options, refreshToken); // kod zatrzymuje się tutaj
+            const response = await authFetch(url, options, refreshToken);
             console.log(2);
             if (!response.ok){
-                  console.log(response)
+                  const data = await response.json();
+                  if (data){
+                        console.log(data.error)
+                        throw data
+                  }
                   return [];
             } 
             const json = await response.json();
@@ -21,8 +25,8 @@ export async function MutationFetch(url: string, options: any = {}, refreshToken
             console.log("Fetched:", json);
             return json || [];
       } catch (error) {
-            console.log("authFetch error:", error);
-            return [];
+            console.log("MutationFetch error:", error);
+            return error;
       }
 }
 
@@ -35,7 +39,7 @@ export async function QueryFetch(url: string, options: any = {}, refreshToken: a
             console.log("Fetched:", json);
             return json || [];
       } catch (error) {
-            console.log("authFetch error:", error);
+            console.log("QueryFetch error:", error);
             return [];
       }
 }

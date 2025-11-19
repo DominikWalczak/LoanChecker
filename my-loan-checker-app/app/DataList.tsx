@@ -73,6 +73,28 @@ export default function DataList({ type, data, Mutation, Mutation2 }: DataListPr
       />
     )
   }
+  else if(type === 2 && Mutation){
+    return(
+      <FlatList 
+          contentContainerStyle={styles.pressView}
+          data={data}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => {
+            if (item.id.toString() === id){
+              return null;
+            }
+            return (              
+              <View style={styles.press}>
+                <Text style={styles.text2}>{item.name}, {item.vorname}, {item.id}, {item.friend_id}</Text>
+                <Pressable onPress={() => 
+                  Mutation({ url: `${env.IP}/friends/delete`, options: { method: "POST", body: JSON.stringify({ id: item.id, user_id: id, f_id: item.friend_id}), }, refreshToken: refreshToken })}>
+                    <Text style={styles.text2}>Delete</Text></Pressable>
+              </View>)
+
+          }}
+      />
+    )
+  }
 }
 
 const styles = StyleSheet.create({

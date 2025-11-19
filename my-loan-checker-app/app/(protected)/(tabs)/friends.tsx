@@ -7,7 +7,8 @@ export default function Friends(){
     <View style={styles.main}>
       <View style={styles.pressView}>
         <Pressable style={styles.press} onPress={() => handleWindowChange("/friends_pending")}><Text style={styles.text2}>Pending $pending_amount</Text></Pressable>
-        <Pressable style={styles.press} onPress={() => handleWindowChange("/friends_add")}><Text style={styles.text2}>Sent Requests</Text></Pressable>
+        <Pressable style={styles.press} onPress={() => handleWindowChange("/friends_sent")}><Text style={styles.text2}>Sent Requests</Text></Pressable>
+        <Pressable style={styles.press} onPress={() => handleWindowChange("/friend_list")}><Text style={styles.text2}>Friend List</Text></Pressable>
         <Pressable style={styles.press} onPress={() => handleWindowChange("/friends_add")}><Text style={styles.text2}>Add Friends $friends_amount til 99, then 99+</Text></Pressable>
       </View>
     </View>

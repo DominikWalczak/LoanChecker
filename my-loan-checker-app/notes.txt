@@ -1,1 +1,11 @@
-konieczne dodanie walidacji czy dane są oraz czy pesel, email jest poprawny oraz ilość znaków // register.tsx
+W friends_add, trzeba ustawić aby nie dublowało requestów
+podczas akceptacji w friends_pending występuje błąd w którym user_id oraz friend_id są takie same, również brak alertu z mutation
+w funkcji odmowy jest błąd po stronie backendu
+nie widać sent requests w friends_sent
+
+sprawdzić jaka wiadomość jest przekazywana z backendu do mutation, bo otrzymuję [], 
+w efekcie nie widać erroru i jest liczone jako sukces w frontendzie
+
+Trzeba dokończyć getAllUninvitedUsers, zweryfikować sqlquery
+
+request z checkFriendRequest w addFriend w backendzie jest traktowane jako truthy mimo pustego wyniku 

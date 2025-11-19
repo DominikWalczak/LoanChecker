@@ -3,7 +3,7 @@ import { MutationFetch, QueryFetch } from "@/src/utils/extractedFunc";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useAuth } from "../../../src/context/AuthContext";
 import env from '../../../src/env';
 

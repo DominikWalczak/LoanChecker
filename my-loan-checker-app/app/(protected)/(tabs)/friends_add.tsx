@@ -18,11 +18,21 @@ export default function Friends_add(){
   const friendAddMutation = useMutation({
     mutationFn: ({ url, options, refreshToken }: { url: string, options: any, refreshToken: any }) => 
       MutationFetch(url, options, refreshToken),
-    onSuccess: () => {
+    onSuccess: (d) => {
+      console.log(5);
+      console.log(d);
+      console.log(d);
+      console.log(d);
+      console.log(d);
+      console.log(d);
+      console.log(5);
+        if(d?.error){
+          throw d.error;
+        }
       alert("Friend request sent");
     },
     onError: (error) => {
-      alert(`Failed to send friend request ${error}`);
+      alert(`Failed to send friend request: ${error}`);
     },
   });
 
