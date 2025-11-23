@@ -37,10 +37,11 @@ export default function Friends_Pending(){
     mutationFn: ({ url, options, refreshToken }: { url: string, options: any, refreshToken: any }) => 
       MutationFetch(url, options, refreshToken),
     onSuccess: (d) => {
-        if(d?.message){
-            throw d.message;
+        if(d?.error){
+            throw d.error;
         }
       alert("Friend request denied");
+      refetch();
     },
     onError: (error) => {
       alert(`Failed to deny friend request ${error}`);
@@ -51,10 +52,11 @@ export default function Friends_Pending(){
     mutationFn: ({ url, options, refreshToken }: { url: string, options: any, refreshToken: any }) => 
       MutationFetch(url, options, refreshToken),
     onSuccess: (d) => {
-        if(d?.message){
-            throw d.message;
+        if(d?.error){
+            throw d.error;
         }
       alert("Friend request accepted");
+      refetch();
     },
     onError: (error) => {
       alert(`Failed to accept friend request ${error}`);

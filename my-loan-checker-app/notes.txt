@@ -3,9 +3,7 @@ podczas akceptacji w friends_pending występuje błąd w którym user_id oraz fr
 w funkcji odmowy jest błąd po stronie backendu
 nie widać sent requests w friends_sent
 
-sprawdzić jaka wiadomość jest przekazywana z backendu do mutation, bo otrzymuję [], 
-w efekcie nie widać erroru i jest liczone jako sukces w frontendzie
+w friends_pending, deny działa poprawnie, lecz po wyborze tej opcji nie znikają wyniki wyszukiwania, ustawić refetch
+friends_sent jest do dokończenia
 
-Trzeba dokończyć getAllUninvitedUsers, zweryfikować sqlquery
-
-request z checkFriendRequest w addFriend w backendzie jest traktowane jako truthy mimo pustego wyniku 
+W friends_add w momencie dodania do znajomych mutation nie dociera do części z refetch
