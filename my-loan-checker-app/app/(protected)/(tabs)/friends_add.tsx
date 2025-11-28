@@ -14,7 +14,7 @@ export default function Friends_add(){
   const {data, isError, isLoading, refetch} = useQuery({
     queryKey: ["friends"],
     queryFn: () => QueryFetch(`${env.IP}/friends/invite`, { method: "POST", body: JSON.stringify({ id: id }) }, refreshToken),
-    enabled: false,
+    enabled: id !== null,   
   });
 
   useEffect(() => {
@@ -26,45 +26,11 @@ export default function Friends_add(){
     loadId();
   }, []);
 
-  useEffect(() => {
-    console.log(1)
-    if (id !== null) {
-      refetch();
-      console.log(2)
-    }
-  }, [id]);
-
 
   const friendAddMutation = useMutation({
     mutationFn: ({ url, options, refreshToken }: { url: string, options: any, refreshToken: any }) => 
       MutationFetch(url, options, refreshToken),
     onSuccess: (d) => {
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(5);
-      console.log(d);
-      console.log(d);
-      console.log(d);
-      console.log(d);
-      console.log(d);
-      console.log(5);
         if(d?.error){
           throw d.error;
         }

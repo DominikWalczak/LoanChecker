@@ -19,16 +19,11 @@ export default function Friends_sent(){
         }
         loadId();
     }, []);
-
-    useEffect(() => {
-        console.log(1)
-        refetch();
-    }, [id]);
     
     const {data, isError, isLoading, refetch} = useQuery({
-        queryKey: ["users"],
-        queryFn: () => QueryFetch(`${env.IP}/friends/${id}`, { method: "POST", body: JSON.stringify({ id: id }) }, refreshToken),
-        enabled: false,
+        queryKey: ["friends", id],
+        queryFn: () => QueryFetch(`${env.IP}/friends/list`, { method: "POST", body: JSON.stringify({ id: id }) }, refreshToken),
+        enabled: id !== null,   
     });
 
     const friendDeleteMutation = useMutation({
@@ -47,7 +42,7 @@ export default function Friends_sent(){
     return(
       <View style={styles.main}>
         <View style={styles.pressView}>
-          <Text>{data.name}</Text>
+          <Text></Text>
         </View>
         <DataList type={3} data={data} Mutation={friendDeleteMutation.mutate}/>
       </View>

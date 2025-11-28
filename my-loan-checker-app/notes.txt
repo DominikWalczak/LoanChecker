@@ -7,3 +7,17 @@ w friends_pending, deny działa poprawnie, lecz po wyborze tej opcji nie znikaj�
 friends_sent jest do dokończenia
 
 W friends_add w momencie dodania do znajomych mutation nie dociera do części z refetch
+
+Powinienem zmienić pobieranie danych w getFriendRequests, trzeba dodać warunek związany z accepted, trzeba zmienić url do friends_sent
+
+Trzeba dokończyć friends_sent, coś nie działa po stronie backendu, może rout?
+
+dane są fetchowane z backendu do friends_sent, ALE konieczne jest ustawienie opcji która pozwala usuwać requesty
+Ponadto konieczna jest weryfikacja czy funkcje działają dotychczas poprawnie, usuwanie, dodawanie itd.
+
+Skończyłem deleteFriendRequest, następnym krokiem będzie poprawienie dodawania do listy friends w momencie akceptacji zaproszenia
+
+
+Poprawiłem dodawanie do friends, powinno działać poprawnie, następnie zacząłem pracę nad getAllUserFriends, 
+console.log zatrzymują się w getAllUserFriends, 
+jest tam błąd związany zapewne z SQLem

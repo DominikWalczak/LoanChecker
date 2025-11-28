@@ -60,9 +60,9 @@ export default function DataList({ type, data, Mutation, Mutation2 }: DataListPr
             }
             return (              
               <View style={styles.press}>
-                <Text style={styles.text2}>{item.name}, {item.vorname}, {item.id}, {item.friend_id}</Text>
+                <Text style={styles.text2}>{item.name}, {item.vorname}, {item.id}, {item.friend_id}, {item.user_id}</Text>
                 <Pressable onPress={() => 
-                  Mutation({ url: `${env.IP}/friends/pending/accept`, options: { method: "POST", body: JSON.stringify({ id: id, f_id: item.friend_id, request_id: item.id }), }, refreshToken: refreshToken })}>
+                  Mutation({ url: `${env.IP}/friends/pending/accept`, options: { method: "POST", body: JSON.stringify({ id: item.user_id, f_id: id, request_id: item.id }), }, refreshToken: refreshToken })}>
                     <Text style={styles.text2}> Accept </Text></Pressable>
                 <Pressable onPress={() => 
                   Mutation2({ url: `${env.IP}/friends/pending/deny`, options: { method: "POST", body: JSON.stringify({request_id: item.id }), }, refreshToken: refreshToken })}>
@@ -89,6 +89,25 @@ export default function DataList({ type, data, Mutation, Mutation2 }: DataListPr
                 <Pressable onPress={() => 
                   Mutation({ url: `${env.IP}/friends/delete`, options: { method: "POST", body: JSON.stringify({ id: item.id, user_id: id, f_id: item.friend_id}), }, refreshToken: refreshToken })}>
                     <Text style={styles.text2}>Delete</Text></Pressable>
+              </View>)
+
+          }}
+      />
+    )
+  }
+  else if(type === 3 && Mutation){
+    return(
+      <FlatList 
+          contentContainerStyle={styles.pressView}
+          data={data}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => {
+            return (              
+              <View style={styles.press}>
+                <Text style={styles.text2}>{item.name}, {item.vorname}, {item.id}</Text>
+                <Pressable onPress={() => 
+                  Mutation({ url: `${env.IP}/friends/pending/request/my/delete`, options: { method: "POST", body: JSON.stringify({ id: item.id}), }, refreshToken: refreshToken })}>
+                    <Text style={styles.text2}>Delete request</Text></Pressable>
               </View>)
 
           }}

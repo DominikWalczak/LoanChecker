@@ -3,19 +3,13 @@ import { MutationFetch, QueryFetch } from "@/src/utils/extractedFunc";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useAuth } from "../../../src/context/AuthContext";
 import env from '../../../src/env';
 
 export default function Friends_Pending(){
   const [id, setId] = useState<string | null>(null);
   const { isLoggedIn, loading, accessToken, logout, refreshToken } = useAuth();
-
-  const {data, isError, isLoading, refetch} = useQuery({
-    queryKey: ["users"],
-    queryFn: () => QueryFetch(`${env.IP}/friends/pending/request`, { method: "POST", body: JSON.stringify({ id: id }) }, refreshToken),
-    enabled: false,
-  });
   
   useEffect(() => {
     async function loadId() {
@@ -26,12 +20,11 @@ export default function Friends_Pending(){
     loadId();
   }, []);
 
-  useEffect(() => {
-    console.log(1)
-    refetch();
-  }, [id]);
-
-
+    const {data, isError, isLoading, refetch} = useQuery({
+    queryKey: ["requests", id],
+    queryFn: () => QueryFetch(`${env.IP}/friends/pending/request`, { method: "POST", body: JSON.stringify({ id: id }) }, refreshToken),
+    enabled: id !== null,   
+  });
 
   const friendDenyMutation = useMutation({
     mutationFn: ({ url, options, refreshToken }: { url: string, options: any, refreshToken: any }) => 
@@ -67,7 +60,6 @@ export default function Friends_Pending(){
       <View style={styles.main}>
         <View style={styles.pressView}>
           {/* wczytywanie flatlisty oraz dodanie searchu */}
-          <Text>{data.name}</Text>
         </View>
         <DataList type={1} data={data} Mutation={friendAcceptMutation.mutate} Mutation2={friendDenyMutation.mutate}/>
       </View>
